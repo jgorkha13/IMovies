@@ -1,0 +1,245 @@
+:root {
+  --primary-red: #e50914;
+  --primary-red-hover: #b80710;
+  --cinema-gold: #f5c518;
+  --accent-cyan: #00b4d8;
+  --dark-bg: #0b0c10;
+  --dark-surface: #14161d;
+  --dark-card: #1c1f26;
+  --dark-border: #2a2e39;
+  --text-muted: #8e95a5;
+  --seat-available: #2c3344;
+  --seat-selected: #00d26a;
+  --seat-booked: #191c22;
+  --seat-vip: #7952b3;
+}
+
+body {
+  margin: 0;
+  font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background-color: var(--dark-bg);
+  color: #f1f5f9;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+h1, h2, h3, .font-heading {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.brand-font {
+  font-family: 'Bebas Neue', sans-serif;
+  letter-spacing: 0.08em;
+}
+
+/* Glassmorphism & Cards */
+.bg-glass {
+  background: rgba(20, 22, 29, 0.85);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--dark-border);
+}
+
+.card-dark {
+  background: var(--dark-card);
+  border: 1px solid var(--dark-border);
+  border-radius: 14px;
+  transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+}
+
+.card-dark:hover {
+  border-color: rgba(229, 9, 20, 0.5);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.45);
+}
+
+/* Hero Section */
+.hero-backdrop {
+  position: relative;
+  min-height: 520px;
+  background-size: cover;
+  background-position: center 20%;
+  display: flex;
+  align-items: flex-end;
+}
+
+.hero-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(180deg, rgba(11,12,16,0.2) 0%, rgba(11,12,16,0.85) 60%, #0b0c10 100%),
+              radial-gradient(circle at right center, rgba(229,9,20,0.15) 0%, transparent 60%);
+}
+
+/* Cinema Screen Visual */
+.screen-container {
+  perspective: 600px;
+  margin: 2rem 0;
+}
+
+.cinema-screen {
+  height: 18px;
+  background: linear-gradient(to bottom, #ffffff, rgba(255,255,255,0.15));
+  border-radius: 50% 50% 0 0 / 100% 100% 0 0;
+  box-shadow: 0 16px 40px var(--screen-glow);
+  transform: rotateX(-12deg);
+  width: 85%;
+  margin: 0 auto;
+}
+
+.screen-label {
+  font-size: 0.75rem;
+  letter-spacing: 0.25em;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  margin-top: 10px;
+}
+
+/* Seat Styles */
+.seat {
+  width: 32px;
+  height: 30px;
+  margin: 4px;
+  border-radius: 6px 6px 3px 3px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.15s ease-in-out;
+  user-select: none;
+  border: 1px solid transparent;
+}
+
+.seat.available {
+  background-color: var(--seat-available);
+  color: #cbd5e1;
+  border-color: #3b4252;
+}
+
+.seat.available:hover {
+  transform: scale(1.15);
+  background-color: #3d465c;
+  border-color: #94a3b8;
+}
+
+.seat.vip.available {
+  background-color: #382455;
+  border-color: #633f92;
+  color: #e9d5ff;
+}
+
+.seat.vip.available:hover {
+  background-color: #4c3074;
+}
+
+.seat.selected {
+  background-color: var(--seat-selected) !important;
+  color: #0b0c10 !important;
+  font-weight: 800;
+  transform: scale(1.12);
+  box-shadow: 0 0 14px rgba(0, 210, 106, 0.7);
+  border-color: #ffffff;
+}
+
+.seat.booked {
+  background-color: var(--seat-booked);
+  color: #475569;
+  cursor: not-allowed;
+  border-color: #222630;
+  opacity: 0.45;
+}
+
+/* Buttons & Badges */
+.btn-cinema-red {
+  background-color: var(--primary-red);
+  color: #ffffff;
+  font-weight: 600;
+  border: none;
+  border-radius: 8px;
+  padding: 0.6rem 1.4rem;
+  transition: all 0.2s ease;
+}
+
+.btn-cinema-red:hover, .btn-cinema-red:focus {
+  background-color: var(--primary-red-hover);
+  color: #ffffff;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(229, 9, 20, 0.35);
+}
+
+.btn-outline-cinema {
+  border: 1px solid var(--primary-red);
+  color: #ffffff;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+}
+
+.btn-outline-cinema:hover {
+  background-color: var(--primary-red);
+  color: #ffffff;
+}
+
+.badge-gold {
+  background-color: var(--cinema-gold);
+  color: #0b0c10;
+  font-weight: 700;
+  border-radius: 6px;
+}
+
+.badge-outline {
+  border: 1px solid var(--dark-border);
+  color: #94a3b8;
+  background: transparent;
+  font-weight: 500;
+}
+
+/* Ticket Design */
+.ticket-stub {
+  background: linear-gradient(135deg, #1e222b 0%, #151820 100%);
+  border: 2px dashed #3a4150;
+  border-radius: 16px;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.6);
+  position: relative;
+}
+
+.ticket-stub::before, .ticket-stub::after {
+  content: '';
+  position: absolute;
+  top: 60%;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background-color: var(--dark-bg);
+}
+
+.ticket-stub::before {
+  left: -12px;
+}
+
+.ticket-stub::after {
+  right: -12px;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #0b0c10;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #2a2e39;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #475569;
+}
