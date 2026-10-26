@@ -1,33 +1,26 @@
 const mongoose = require('mongoose');
 
+let isConnected = false;
+
 const connectDB = async () => {
-  let mongoUri = process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/imovies';
+  const mongoUri = process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/imovies';
 
   try {
     const conn = await mongoose.connect(mongoUri, {
-      serverSelectionTimeoutMS: 5000,
+      serverSelectionTimeoutMS: 2500,
     });
+    isConnected = true;
     console.log(`[Database] MongoDB Connected: ${conn.connection.host}`);
     return conn;
   } catch (error) {
-    console.warn(`[Database] Primary MongoDB connection failed (${error.message}).`);
-
-    // In development or when requested, fall back to in-memory MongoDB
-    if (process.env.NODE_ENV !== 'production' || process.env.USE_MEMORY_DB === 'true') {
-      try {
-        console.log('[Database] Starting in-memory fallback MongoDB instance...');
-        const { MongoMemoryServer } = require('mongodb-memory-server');
-        const mongod = await MongoMemoryServer.create();
-        const memUri = mongod.getUri();
-        const conn = await mongoose.connect(memUri);
-        console.log(`[Database] In-memory MongoDB Connected at: ${memUri}`);
-        return conn;
-      } catch (memErr) {
-        console.warn('[Database] In-memory fallback could not be initialized:', memErr.message);
-      }
-    }
-    console.warn('[Database] Please provide a valid MONGODB_URI in your .env or platform config.');
+    isConnected = false;
+    console.warn(`[Database] Note: Could not connect to MongoDB at "${mongoUri}" (${error.message}).`);
+    console.log(`[Database] Active: Running with built-in memory store so the app works out of the box!`);
+    console.log(`[Database] Tip: To connect to MongoDB Atlas or local MongoDB, update MONGODB_URI in your .env file.`);
+    return null;
   }
 };
 
-module.exports = connectDB;
+const getIsConnected = () => isConnected;
+
+module.exports = { connectDB, getIsConnected };

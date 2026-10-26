@@ -1,5 +1,7 @@
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
+const { getIsConnected } = require('../config/db');
+const mockStore = require('../config/mockStore');
 
 const protect = async (req, res, next) => {
   let token;
@@ -14,7 +16,17 @@ const protect = async (req, res, next) => {
         token,
         process.env.JWT_SECRET || 'imovies_super_secret_jwt_key_2026'
       );
-      req.user = await User.findById(decoded.id).select('-password');
+
+      if (getIsConnected()) {
+        req.user = await User.findById(decoded.id).select('-password');
+      } else {
+        const u = mockStore.users.find((user) => user._id === decoded.id);
+        if (u) {
+          const { password, ...safeUser } = u;
+          req.user = safeUser;
+        }
+      }
+
       if (!req.user) {
         return res.status(401).json({ message: 'User not found for this token' });
       }

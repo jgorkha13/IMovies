@@ -3,7 +3,7 @@ const cors = require('cors');
 const morgan = require('morgan');
 const path = require('path');
 const dotenv = require('dotenv');
-const connectDB = require('./config/db');
+const { connectDB, getIsConnected } = require('./config/db');
 
 // Load environment variables
 dotenv.config({ path: path.join(__dirname, '../.env') });
@@ -11,21 +11,22 @@ dotenv.config({ path: path.join(__dirname, '../.env') });
 const app = express();
 
 // Connect to Database
-connectDB().then(async () => {
-  // Check if initial seeding is needed
-  try {
-    const Movie = require('./models/Movie');
-    const movieCount = await Movie.countDocuments();
-    if (movieCount === 0) {
-      console.log('[Server] Database is empty. Running initial seed data automatically...');
-      const seedDatabase = require('./seed/seedData');
-      await seedDatabase();
+connectDB().then(async (conn) => {
+  if (conn) {
+    try {
+      const Movie = require('./models/Movie');
+      const movieCount = await Movie.countDocuments();
+      if (movieCount === 0) {
+        console.log('[Server] Database is empty. Running initial seed data...');
+        const seedDatabase = require('./seed/seedData');
+        await seedDatabase();
+      }
+    } catch (seedErr) {
+      console.warn('[Server] Auto-seed warning:', seedErr.message);
     }
-  } catch (seedErr) {
-    console.warn('[Server] Auto-seed check warning:', seedErr.message);
   }
 }).catch((err) => {
-  console.error('[Server] Critical: Database connection failed:', err.message);
+  console.warn('[Server] DB initialization warning:', err.message);
 });
 
 // Middlewares
@@ -48,9 +49,14 @@ app.use('/api/admin', require('./routes/adminRoutes'));
 // Manual trigger for seeding if requested
 app.post('/api/seed', async (req, res) => {
   try {
-    const seedDatabase = require('./seed/seedData');
-    await seedDatabase();
-    res.json({ message: 'Database seeded successfully with sample movies, theaters, and shows' });
+    if (getIsConnected()) {
+      const seedDatabase = require('./seed/seedData');
+      await seedDatabase();
+      return res.json({ message: 'Database seeded successfully with sample movies, theaters, and shows' });
+    }
+    const mockStore = require('./config/mockStore');
+    await mockStore.init();
+    res.json({ message: 'Memory store reset & re-seeded successfully' });
   } catch (err) {
     res.status(500).json({ message: 'Seed failed', error: err.message });
   }
@@ -60,6 +66,7 @@ app.post('/api/seed', async (req, res) => {
 app.get('/api/health', (req, res) => {
   res.json({
     status: 'healthy',
+    mode: getIsConnected() ? 'mongodb' : 'memory-store',
     uptime: process.uptime(),
     timestamp: new Date().toISOString(),
     service: 'IMovies API',
@@ -89,10 +96,11 @@ app.use((err, req, res, next) => {
   });
 });
 
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 5050;
 app.listen(PORT, '0.0.0.0', () => {
   console.log(`====================================================`);
-  console.log(`🍿 IMovies Server running in ${process.env.NODE_ENV || 'development'} mode on port ${PORT}`);
+  console.log(`🍿 IMovies Server running on port ${PORT}`);
   console.log(`   API Endpoint: http://localhost:${PORT}/api/health`);
+  console.log(`   Client Dev URL: http://localhost:3000`);
   console.log(`====================================================`);
 });
