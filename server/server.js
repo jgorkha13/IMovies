@@ -73,9 +73,11 @@ app.get('/api/health', (req, res) => {
   });
 });
 
-// Production: Serve static assets from React client build
-if (process.env.NODE_ENV === 'production' || process.env.SERVE_CLIENT === 'true') {
-  const clientDistPath = path.join(__dirname, '../client/dist');
+// Serve static assets from React client build if built
+const clientDistPath = path.join(__dirname, '../client/dist');
+const fs = require('fs');
+
+if (fs.existsSync(clientDistPath)) {
   app.use(express.static(clientDistPath));
 
   app.get('*', (req, res) => {
