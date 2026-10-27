@@ -132,13 +132,21 @@ npm run seed
 ```
 
 ### 4. Start the Application
-Run both the Express backend and Vite React development server concurrently:
+
+You have two simple options:
+
+**Option 1: Unified Full-Stack Server (Recommended & Simplest)**
+```bash
+npm start
+```
+* **Full Application (Frontend + Backend)**: [http://localhost:5050](http://localhost:5050)
+
+**Option 2: Development Mode (Hot-Reloading)**
 ```bash
 npm run dev
 ```
-
-- **Frontend Application**: `http://localhost:3000`
-- **Backend API**: `http://localhost:5000/api/health`
+* **Frontend Dev Server**: [http://localhost:3000](http://localhost:3000)
+* **Backend API**: [http://localhost:5050/api/health](http://localhost:5050/api/health)
 
 ---
 
